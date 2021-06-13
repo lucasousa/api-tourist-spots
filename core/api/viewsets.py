@@ -6,15 +6,16 @@ from rest_framework.filters import SearchFilter
 from core.models import TouristSpot
 from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.authentication import TokenAuthentication
+from django.http import HttpResponse
 
 
 class TouristSpotViewSet(viewsets.ModelViewSet):
-    permission_classes=(DjangoModelPermissions,) #dá as mesmas permissões dada ao usuário no django admin
+    permission_classes=(IsAuthenticated,) #dá as mesmas permissões dada ao usuário no django admin
     authentication_classes=(TokenAuthentication,)
     serializer_class = TouristSpotSerializer
     filter_backends = (SearchFilter, )
     search_fields = ('name','description')
-    #lookup_field='name' #agora irá buscar pelo name ao invés do id (o padrão é o id), porém, para substituir o padrão, deve-se passar um campo que seja único
+    lookup_field='id' #agora irá buscar pelo name ao invés do id (o padrão é o id), porém, para substituir o padrão, deve-se passar um campo que seja único
 
     def get_queryset(self):
         queryset = TouristSpot.objects.all()
@@ -64,7 +65,16 @@ class TouristSpotViewSet(viewsets.ModelViewSet):
     def teste(self, request):
         pass
 
+    @action(methods=['post'], detail=True)
+    def associate_attractions(self, request, id):
+        attractions = request.data['ids']
+        
+        point = TouristSpot.objects.get(id=id)
+        point.attractions.set(attractions)
 
+        point.save()
+
+        return HttpResponse("OK")
 
 #Métodos do compormento padrão:
 # - list

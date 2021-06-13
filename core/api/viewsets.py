@@ -4,12 +4,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from core.models import TouristSpot
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.authentication import TokenAuthentication
 
 
 class TouristSpotViewSet(viewsets.ModelViewSet):
-    permission_classes=(IsAuthenticated,)
+    permission_classes=(DjangoModelPermissions,) #dá as mesmas permissões dada ao usuário no django admin
     authentication_classes=(TokenAuthentication,)
     serializer_class = TouristSpotSerializer
     filter_backends = (SearchFilter, )

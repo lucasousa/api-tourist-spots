@@ -14,5 +14,9 @@ class TouristSpot(models.Model):
     address = models.ForeignKey(Address,on_delete=models.CASCADE, null=True, blank=True) #delete address when delete the tourist spot
     image = models.ImageField(upload_to='touristspots', blank=True, null=True)
 
+    @property #faz o mesmo que o serializer field
+    def full_description2(self):
+        return '%s - %s' % (self.name, self.description)
+
     def __str__(self):
         return self.name
